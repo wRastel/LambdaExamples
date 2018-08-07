@@ -53,7 +53,9 @@ def lambda_handler(event, context):
     # Only execute if the security group has a particular tag
     secgroup = event["detail"]["requestParameters"]["groupId"]
     sec_details = ec2.describe_security_groups(GroupIds=[secgroup])
-    tags = sec_details["SecurityGroups"][0]["Tags"]
+    tags = []
+    if "Tags" in sec_details["SecurityGroups"][0]:
+        tags = sec_details["SecurityGroups"][0]["Tags"]
     for tag in tags:
         if (tag["Key"] == "SecurityLevel") and (tag["Value"] == "High"):
             print("The security group is tagged with a security level of high")
